@@ -7,24 +7,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "list.h"
 
-typedef enum{
-    STRING_SUCCESS,
-    STRING_MEMORY_ERROR,
-}StringResult;
+int charlen (char* s);
 
-typedef struct string_t* String;
+char* charcpy (char* source);
 
-String createString(const char *s);
+int charcmp(char* s1, char* s2);
 
-void deleteString(String s);
-
-int strlen(String s);
-
-int strcpy(String from, String dest);
-
-int strcmp(String s1, String s2);
-
-
-
+void freeChar(Element val);
+Element copyChar(Element val);
+int compareChar(Element val1,Element val2);
 #endif //PROJECTEMOT_STRING_H

@@ -5,77 +5,25 @@
 #include "string.h"
 #include <assert.h>
 
-struct string_t{
-    char* data;
-    int length;
-};
 
-int charlen (const char* s);
-void charcpy (const char* source, char* destination);
 
-String  createString(const char *source){
-    String s2;
-    s2 = malloc(sizeof(String));
-    if(!(s2)){
-        return NULL;
-    }
-    s2->length = charlen(source);
-    s2->data = malloc((size_t)s2->length);
-    if(!(s2->data)){
-        free(s2);
-        return NULL;
-    }
-    charcpy(source,s2->data);
-    // verf
-    assert(s2 != NULL);
-    assert(s2->data != NULL);
-    return s2;
-}
-
-void deleteString(String s){
-    //verf
-    assert(s != NULL);
-    free(s->data);
-    free(s);
-}
-
-int strlen(String s){
-    //verf
-    assert(s != NULL);
-    return s->length;
-}
-
-int strcpy(String source, String dest){
-    //verf
-    assert(source != NULL);
-    assert(dest != NULL);
-    assert(source->length == dest->length);
-
-    charcpy(source->data, dest->data);
-}
-
-int strcmp(String s1, String s2){
+int charcmp(char* s1, char* s2){
     assert(s1 != NULL);
     assert(s2 != NULL);
-    char* s1_ptr = s1->data ;
-    char* s2_ptr = s2->data;
-    while(*s1_ptr != '\0' && *s2_ptr != '\0'){
-        if(*s1_ptr < *s2_ptr){
+    while(*s1 != '\0' && *s2 != '\0'){
+        if(*s1 < *s2){
             return 1;
         }
-        else if(*s1_ptr > *s2_ptr){
+        else if(*s1 > *s2){
             return -1;
         }
-        s1_ptr++;
-        s2_ptr++;
+        s1++;
+        s2++;
     }
-    return *s2_ptr - *s1_ptr;
+    return *s2 - *s1;
 }
 
-
-//helpers:
-int charlen (const char* s){
-    //verf
+int charlen (char* s){
     assert(s!=NULL);
     int count=0;
     while(*s!='\0'){
@@ -86,8 +34,13 @@ int charlen (const char* s){
 
 }
 
-void charcpy (const char* source, char* destination) {
-
+char* charcpy (char* source) {
+    assert(source != NULL);
+    int len = charlen(source)+1;
+    char* destination = malloc((size_t)len);
+    if(!destination){
+        return NULL;
+    }
     while (*source != '\0')
     {
         *destination = *source;
@@ -95,4 +48,25 @@ void charcpy (const char* source, char* destination) {
         source++;
     }
     destination='\0';
+    return destination;
+}
+
+void freeChar(Element val){
+    assert(val != NULL);
+    char* str = (char*) val;
+    free(str);
+}
+
+Element copyChar(Element val){
+    assert(val != NULL);
+    char* str = (char*) val;
+    return charcpy(str);
+}
+
+int compareChar(Element val1,Element val2){
+    assert(val1 != NULL);
+    assert(val2 != NULL);
+    char* str1 = (char*) val1;
+    char* str2 = (char*) val2;
+    return charcmp(str1,str2);
 }
