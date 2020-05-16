@@ -8,6 +8,19 @@
 #include <stdbool.h>
 // element
 typedef void* Element;
+
+typedef enum{
+    LIST_SUCCESS,
+    LIST_MEMORY_ERROR,
+    LIST_ALREADY_EXIST,
+    LIST_NOT_EXIST,
+    LIST_ITEM2_DOES_NOT_EXIST
+}ListResult;
+
+/**
+ * the sturcts we have defined may use sort of list or queue, not sure yet which code to include here.
+ * */
+
 typedef struct list_t* List;
 typedef bool (*listIterator)(Element);
 
@@ -22,15 +35,14 @@ typedef struct _listNode {
     struct _listNode *next;
 } listNode;
 
+#define FOR_EACH(item, list) \
+    for (listNode* (item) = (list); (item); (item) = (item)->next)
 
-
-void list_new(List list, int elementSize, freeFunction freeFn);
-void list_destroy(List list);
-
-void list_add(List list, void *element);
-void list_delete(List list);
+List list_new(freeFunction freeFn, copyFunction copyFn, compareFunction cmpFn);
+ListResult list_destroy(List list);
+ListResult list_add(List list, Element elem);
+ListResult list_delete(List list, Element elem);
 int list_size(List list);
-
-void list_for_each(List list, listIterator iterator);
+Element list_get_element(List list, Element element);
 
 #endif //PROJECTEMOT_LIST_H

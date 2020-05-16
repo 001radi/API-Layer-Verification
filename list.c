@@ -17,16 +17,26 @@ struct list_t{
     compareFunction cmpFn;
 };
 
-void list_new(List list, int elementSize, freeFunction freeFn)
-{
-    assert(elementSize > 0);
+List list_new(freeFunction freeFn, copyFunction copyFn, compareFunction cmpFn)
+{   // verf
+    assert(freeFn != NULL);
+    assert(copyFn != NULL);
+    assert(cmpFn != NULL);
+    List list =malloc(sizeof(list));
+    if((!list)) {
+    return NULL;
+    }
     list->len = 0;
     list->head = list->tail = NULL;
     list->freeFn = freeFn;
+    list->copyFn = copyFn;
+    list->cmpFn = cmpFn;
+    return list;
 }
 
-void list_destroy(List list)
+ListResult list_destroy(List list)
 {
+    assert(list != NULL);
     listNode *current;
     while(list->head != NULL) {
         current = list->head;
@@ -39,13 +49,24 @@ void list_destroy(List list)
         free(current->data);
         free(current);
     }
+    free(list);
 }
 
 
-void list_add(List list, Element element)
+ListResult list_add(List list, Element element)
 {
+    if(!list_get_element(list, element)){
+        return LIST_ALREADY_EXIST;
+    }
     listNode *node = malloc(sizeof(listNode));
+   if(!node){
+       return LIST_MEMORY_ERROR;
+   }
     node->data = list->copyFn(element);
+   if(!(node->data)){
+      free(node);
+       return LIST_MEMORY_ERROR;
+   }
     node->next = NULL;
 
     if(list->len == 0) {
@@ -71,7 +92,7 @@ Element list_get_element(List list, Element element)
     return NULL;
 }
 
-void deleteNode(List list, Element element)
+ListResult list_delete(List list, Element element)
 {
     // Store head node
     listNode *temp = list->head;
@@ -81,7 +102,7 @@ void deleteNode(List list, Element element)
     if (temp != NULL && (!(list->cmpFn(temp->data, element)))) {
         list->head = temp->next;   // Changed head
         free(temp);               // free old head
-        return;
+        return LIST_SUCCESS;
     }
 
     // Search for the key to be deleted, keep track of the
@@ -92,12 +113,13 @@ void deleteNode(List list, Element element)
     }
 
     // If key was not present in linked list
-    if (temp == NULL) return;
+    if (temp == NULL) LIST_NOT_EXIST;
 
     // Unlink the node from linked list
     prev->next = temp->next;
     list->freeFn(temp);  // Free memory
     list->len--;
+    return LIST_SUCCESS;
 }
 
 int list_size(List list)
