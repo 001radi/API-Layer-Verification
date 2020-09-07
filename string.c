@@ -4,12 +4,14 @@
 
 #include "string.h"
 #include <assert.h>
+#include "helpers.h"
+#include <seahorn/seahorn.h>
 
 
 
 int charcmp(char* s1, char* s2){
-    assert(s1 != NULL);
-    assert(s2 != NULL);
+    assume(s1 != NULL);
+    assume(s2 != NULL);
     while(*s1 != '\0' && *s2 != '\0'){
         if(*s1 < *s2){
             return 1;
@@ -24,7 +26,7 @@ int charcmp(char* s1, char* s2){
 }
 
 int charlen (char* s){
-    assert(s!=NULL);
+    assume(s!=NULL);
     int count=0;
     while(*s!='\0'){
         count++;
@@ -35,37 +37,39 @@ int charlen (char* s){
 }
 
 char* charcpy (char* source) {
-    assert(source != NULL);
+    assume(source != NULL);
     int len = charlen(source)+1;
-    char* destination = malloc((size_t)len);
-    if(!destination){
-        return NULL;
-    }
+    char* destination = xmalloc((size_t)len);
+    sassert(destination > 0);
+    char* ptr = destination;
     while (*source != '\0')
     {
-        *destination = *source;
-        destination++;
+        *ptr = *source;
+        ptr++;
         source++;
     }
-    destination='\0';
+    *ptr='\0';
+    sassert(destination != NULL);
     return destination;
 }
 
 void freeChar(Element val){
-    assert(val != NULL);
+    assume(val != NULL);
     char* str = (char*) val;
     free(str);
 }
 
 Element copyChar(Element val){
-    assert(val != NULL);
+    assume(val != NULL);
     char* str = (char*) val;
-    return charcpy(str);
+    char* res = charcpy(str);
+    sassert(res != NULL);
+    return res;
 }
 
 int compareChar(Element val1,Element val2){
-    assert(val1 != NULL);
-    assert(val2 != NULL);
+    assume(val1 != NULL);
+    assume(val2 != NULL);
     char* str1 = (char*) val1;
     char* str2 = (char*) val2;
     return charcmp(str1,str2);

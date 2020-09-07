@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.16)
-project(untitled1 C)
+cmake_minimum_required(VERSION 3.10)
+project(ProjectEmot C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(untitled1 main.c string.c string.h helpers.h helpers.c list.h list.c API.c API.h)
+add_executable(ProjectEmot  API.h string.c string.h list.c list.h API.c helpers.h helpers.c main.c)

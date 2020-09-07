@@ -24,6 +24,8 @@ typedef enum{
 typedef struct list_t* List;
 typedef bool (*listIterator)(Element);
 
+
+
 // a common function used to free malloc'd objects
 typedef void (*freeFunction)(Element);
 typedef Element (*copyFunction)(Element);
@@ -35,14 +37,25 @@ typedef struct _listNode {
     struct _listNode *next;
 } listNode;
 
+struct list_t{
+    int len;
+    listNode *head;
+    listNode *tail;
+    freeFunction freeFn;
+    copyFunction copyFn;
+    compareFunction cmpFn;
+};
+
 #define FOR_EACH(item, list) \
-    for (listNode* (item) = (list); (item); (item) = (item)->next)
+    for (listNode* (item) = (list) ; (item); (item) = (item)->next)
 
 List list_new(freeFunction freeFn, copyFunction copyFn, compareFunction cmpFn);
-ListResult list_destroy(List list);
+void list_destroy(List list);
 ListResult list_add(List list, Element elem);
 ListResult list_delete(List list, Element elem);
 int list_size(List list);
 Element list_get_element(List list, Element element);
+
+listNode* list_get_head(List list);
 
 #endif //PROJECTEMOT_LIST_H
